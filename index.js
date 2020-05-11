@@ -16,7 +16,7 @@ app.get('/api/courses', (req,res) => {
 app.get('/api/posts/:year/:month', (req,res) => {
 
     res.send(req.query);
-//  res.send(req.params);
+ // res.send(req.params);
 
 });
 
