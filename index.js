@@ -24,6 +24,7 @@ app.get('/api/courses/:id', (req,res) => {
    if (!course) res.status(404).send('The course whith the given ID is not found.'); // 404
    res.send(course);
 
+   
  // res.send(req.query);
  // res.send(req.params);
 
