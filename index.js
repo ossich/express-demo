@@ -26,7 +26,7 @@ app.get('/api/courses', (req,res) => {
 app.get('/api/courses/:id', (req,res) => {
 
    const course = courses.find(c => c.id === parseInt(req.params.id));
-   if (!course) res.status(404).send('The course whith the given ID is not found.'); // 404
+   if (!course) return res.status(404).send('The course whith the given ID is not found.'); // 404
    res.send(course);
 
 
@@ -37,11 +37,8 @@ app.get('/api/courses/:id', (req,res) => {
 
 app.post('/api/courses', (req,res) =>{ 
     const { error } = validateCourse(req.body); // result.error
-    if (error) {
-        // 400 Bad request
-        res.status(400).send(error.details[0].message);
-        return;
-    }
+    if (error) return  res.status(400).send(error.details[0].message);  // 400 Bad request
+    
     const course={
         id: courses.length + 1,
         name: req.body.name
@@ -54,24 +51,38 @@ app.put('/api/courses/:id',(req,res) => {
     // Look up the course
     // If not existing, return 404
    const course = courses.find(c => c.id === parseInt(req.params.id));
-   if (!course) res.status(404).send('The course whith the given ID is not found.'); // 404
+   if (!course) return res.status(404).send('The course whith the given ID is not found.'); // 404
 
 
     // Validate
     // If invalid, return 400 - Bad request
 
    const { error } = validateCourse(req.body); // result.error
-    if (error) {
-        // 400 Bad request
-        res.status(400).send(error.details[0].message);
-        return;
-    }
+    if (error) return res.status(400).send(error.details[0].message); // 400 Bad request
 
     // Update corse
     // Return the updated course
     course.name = req.body.name;
     res.send(course);
 });
+
+
+app.delete('/api/courses/:id', (req, res) => {
+    // Look up the course
+    // Not existing -> return 404
+   const course = courses.find(c => c.id === parseInt(req.params.id));
+   if (!course) return res.status(404).send('The course whith the given ID is not found.'); // 404
+
+    // Delete
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+
+
+    //Return the same course
+    res.send(course);
+});
+
+
 
 function validateCourse(course) {
     const schema = {
